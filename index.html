@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhishGuard - Phishing URL Detection System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Decorative background wave shapes -->
+  <div class="bg-shape bg-shape-top"></div>
+  <div class="bg-shape bg-shape-bottom"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" fill="#1865F2"/>
+            <path d="M9 11.5C9 10.12 10.12 9 11.5 9H13V10.5H11.5C10.95 10.5 10.5 10.95 10.5 11.5C10.5 12.05 10.95 12.5 11.5 12.5H13V14H11.5C10.12 14 9 12.88 9 11.5ZM11 11.75H13V13.25H11V11.75ZM12.5 10H14C15.38 10 16.5 11.12 16.5 12.5C16.5 13.88 15.38 15 14 15H12.5V13.5H14C14.55 13.5 15 13.05 15 12.5C15 11.95 14.55 11.5 14 11.5H12.5V10Z" fill="white"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">PhishGuard</span>
+          <span class="brand-subtitle">Stay Safe Online</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="#" class="nav-link active">Home</a>
+        <a href="#" class="nav-link">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero & Main Scanner Section -->
+  <main class="main-content">
+    <div class="container hero-container">
+      
+      <!-- Hero Center Badge Icon -->
+      <div class="hero-badge-container">
+        <div class="hero-badge-bg"></div>
+        <div class="hero-badge-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" fill="#1865F2"/>
+            <path d="M10 14C8.9 14 8 13.1 8 12C8 10.9 8.9 10 10 10H12V11.5H10C9.72 11.5 9.5 11.72 9.5 12C9.5 12.28 9.72 12.5 10 12.5H12V14H10ZM10.5 11.25H13.5V12.75H10.5V11.25ZM12 14V12.5H14C14.28 12.5 14.5 12.28 14.5 12C14.5 11.72 14.28 11.5 14 11.5H12V10H14C15.1 10 16 10.9 16 12C16 13.1 15.1 14 14 14H12Z" fill="white"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="hero-title">
+        Phishing URL<br>
+        <span class="highlight-text">Detection System</span>
+      </h1>
+
+      <p class="hero-description">
+        Check if a URL is safe or a phishing attempt. Enter the URL below<br>to get an instant analysis.
+      </p>
+
+      <!-- URL Input Card -->
+      <div class="scanner-card">
+        <div class="input-header">
+          <svg class="input-header-icon" viewBox="0 0 24 24" fill="none" stroke="#1865F2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+          </svg>
+          <span class="input-label">Enter URL</span>
+        </div>
+
+        <form class="scanner-form" action="result.html" method="GET">
+          <input 
+            type="url" 
+            name="url"
+            id="url-input" 
+            class="url-input" 
+            placeholder="e.g. https://www.example.com" 
+            required
+          />
+          <button type="submit" class="btn-check">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>Check URL</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Feature Grid -->
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1865F2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <polyline points="9 12 11 14 15 10"></polyline>
+            </svg>
+          </div>
+          <h3 class="feature-title">Detect</h3>
+          <p class="feature-subtitle">Find phishing<br>URLs</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1865F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a5 5 0 0 1 5 5c0 1.5-.7 2.8-1.8 3.7.8.6 1.4 1.5 1.7 2.5a5.5 5.5 0 0 1-2.9 6.3V22h-4v-2.5A5.5 5.5 0 0 1 7.1 13.2C7.4 12.2 8 11.3 8.8 10.7 7.7 9.8 7 8.5 7 7a5 5 0 0 1 5-5z"></path>
+              <path d="M12 6v6"></path>
+              <path d="M9 9h6"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title">Powered by AI</h3>
+          <p class="feature-subtitle">Machine Learning<br>based analysis</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="#1865F2">
+              <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Fast & Reliable</h3>
+          <p class="feature-subtitle">Get results<br>in seconds</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1865F2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title">Safer Internet</h3>
+          <p class="feature-subtitle">Protect yourself<br>online</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
