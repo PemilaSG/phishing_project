@@ -41,12 +41,12 @@
     <div class="container hero-container">
       
       <!-- Result Card Container -->
-      <div class="result-card">
+      <div class="result-card" id="result-card">
         
-        <!-- Warning Icon Badge -->
+        <!-- Warning / Safe Icon Badge -->
         <div class="result-badge-container">
-          <div class="result-badge-bg"></div>
-          <div class="result-badge-icon">
+          <div class="result-badge-bg" id="result-badge-bg"></div>
+          <div class="result-badge-icon" id="result-badge-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="12" cy="12" r="10" fill="#EF4444"/>
               <path d="M12 7V13" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
@@ -56,29 +56,29 @@
         </div>
 
         <!-- Result Title & Description -->
-        <h1 class="result-title">Phishing URL</h1>
-        <p class="result-description">
-          The URL you entered is likely to be a phishing website.<br>Avoid clicking on it.
+        <h1 class="result-title" id="result-title">Analyzing URL...</h1>
+        <p class="result-description" id="result-description">
+          Connecting to PhishGuard AI detection engine...
         </p>
 
         <!-- Risk Level Box -->
-        <div class="risk-box">
+        <div class="risk-box" id="risk-box">
           <div class="risk-row">
             <div class="risk-label-group">
               <div class="risk-icon-shield">
-                <svg viewBox="0 0 24 24" fill="#EF4444" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 2L4 5V11C4 16.55 7.4 21.74 12 23C16.6 21.74 20 16.55 20 11V5L12 2Z"/>
                   <path d="M12 6.5L13.2 9.5H16.5L13.8 11.5L14.8 14.5L12 12.6L9.2 14.5L10.2 11.5L7.5 9.5H10.8L12 6.5Z" fill="white"/>
                 </svg>
               </div>
-              <span class="risk-title">Risk Level</span>
+              <span class="risk-title" id="risk-title">Risk Level</span>
             </div>
-            <span class="risk-badge">High</span>
+            <span class="risk-badge" id="risk-badge">--</span>
           </div>
 
           <div class="risk-row">
             <span class="confidence-title">Confidence Score</span>
-            <span class="confidence-value">92%</span>
+            <span class="confidence-value" id="confidence-value">--%</span>
           </div>
         </div>
 
@@ -91,26 +91,11 @@
                 <path d="M12 6.5L13.2 9.5H16.5L13.8 11.5L14.8 14.5L12 12.6L9.2 14.5L10.2 11.5L7.5 9.5H10.8L12 6.5Z" fill="white"/>
               </svg>
             </div>
-            <h2 class="reasons-title">Why this URL is suspicious?</h2>
+            <h2 class="reasons-title" id="reasons-title">Analysis Reasons</h2>
           </div>
 
-          <ul class="reasons-list">
-            <li class="reason-item">
-              <span class="reason-icon">!</span>
-              <span class="reason-text">Contains suspicious keywords (login, verify, account)</span>
-            </li>
-            <li class="reason-item">
-              <span class="reason-icon">!</span>
-              <span class="reason-text">Uses multiple subdomains</span>
-            </li>
-            <li class="reason-item">
-              <span class="reason-icon">!</span>
-              <span class="reason-text">Long URL length (68 characters)</span>
-            </li>
-            <li class="reason-item">
-              <span class="reason-icon">!</span>
-              <span class="reason-text">Does not use a valid domain (looks like a spoof)</span>
-            </li>
+          <ul class="reasons-list" id="reasons-list">
+            <!-- Dynamic Reason Items -->
           </ul>
         </div>
 
@@ -123,7 +108,7 @@
             </svg>
             <span class="url-checked-label">URL Checked</span>
           </div>
-          <p class="url-checked-text" id="url-text">https://paypal-login-security.com/account/verify</p>
+          <p class="url-checked-text" id="url-text">Loading...</p>
         </div>
 
         <!-- Back to Home Button -->
@@ -141,12 +126,106 @@
   </main>
 
   <script>
-    // Extract query parameter if passed from index.html form
-    const params = new URLSearchParams(window.location.search);
-    const checkedUrl = params.get('url');
-    if (checkedUrl) {
-      document.getElementById('url-text').textContent = checkedUrl;
+    async function analyzeURL() {
+      const params = new URLSearchParams(window.location.search);
+      const checkedUrl = params.get('url');
+
+      const urlTextEl = document.getElementById('url-text');
+      const resultCard = document.getElementById('result-card');
+      const badgeIcon = document.getElementById('result-badge-icon');
+      const resultTitle = document.getElementById('result-title');
+      const resultDesc = document.getElementById('result-description');
+      const riskTitle = document.getElementById('risk-title');
+      const riskBadge = document.getElementById('risk-badge');
+      const confidenceVal = document.getElementById('confidence-value');
+      const reasonsTitle = document.getElementById('reasons-title');
+      const reasonsList = document.getElementById('reasons-list');
+
+      if (!checkedUrl) {
+        urlTextEl.textContent = 'No URL provided';
+        resultTitle.textContent = 'Invalid Input';
+        resultDesc.textContent = 'Please return to the home page and enter a URL to analyze.';
+        return;
+      }
+
+      urlTextEl.textContent = checkedUrl;
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/check-url', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url: checkedUrl })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.result) {
+          const res = data.result;
+
+          confidenceVal.textContent = res.confidence + '%';
+          reasonsList.innerHTML = '';
+
+          if (res.is_phishing) {
+            resultCard.classList.remove('is-safe');
+            badgeIcon.innerHTML = `
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" fill="#EF4444"/>
+                <path d="M12 7V13" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="12" cy="16.5" r="1.25" fill="white"/>
+              </svg>`;
+            resultTitle.textContent = 'Phishing URL';
+            resultDesc.innerHTML = 'The URL you entered is likely to be a phishing website.<br>Avoid clicking on it.';
+            riskTitle.textContent = 'Risk Level';
+            riskBadge.textContent = 'High';
+            reasonsTitle.textContent = 'Why this URL is suspicious?';
+
+            res.reasons.forEach(reason => {
+              const li = document.createElement('li');
+              li.className = 'reason-item';
+              li.innerHTML = `
+                <span class="reason-icon">!</span>
+                <span class="reason-text">${reason}</span>
+              `;
+              reasonsList.appendChild(li);
+            });
+
+          } else {
+            resultCard.classList.add('is-safe');
+            badgeIcon.innerHTML = `
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" fill="#22C55E"/>
+                <path d="M9 12L11 14L15 9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>`;
+            resultTitle.textContent = 'Legitimate URL';
+            resultDesc.innerHTML = 'The URL you entered appears to be safe and legitimate.<br>Always double-check before entering sensitive information.';
+            riskTitle.textContent = 'Safety Level';
+            riskBadge.textContent = 'Safe';
+            reasonsTitle.textContent = 'Security Indicators Verified:';
+
+            res.reasons.forEach(reason => {
+              const li = document.createElement('li');
+              li.className = 'reason-item';
+              li.innerHTML = `
+                <span class="reason-icon" style="background-color: #22c55e;">✓</span>
+                <span class="reason-text">${reason}</span>
+              `;
+              reasonsList.appendChild(li);
+            });
+          }
+        } else {
+          resultTitle.textContent = 'Scan Failed';
+          resultDesc.textContent = data.message || 'Could not perform detection scan.';
+        }
+      } catch (error) {
+        console.error('Error connecting to backend:', error);
+        resultTitle.textContent = 'Connection Error';
+        resultDesc.textContent = 'Backend server is unreachable. Please ensure Flask app.py is running on http://127.0.0.1:5000.';
+      }
     }
+
+    window.addEventListener('DOMContentLoaded', analyzeURL);
   </script>
 </body>
 </html>

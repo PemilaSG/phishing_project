@@ -616,3 +616,34 @@ body {
     padding: 24px 20px;
   }
 }
+
+/* =====================================
+   SAFE / LEGITIMATE RESULT STYLING
+   ===================================== */
+
+.result-card.is-safe .result-badge-bg {
+  background: rgba(34, 197, 94, 0.18);
+}
+
+.result-card.is-safe .result-title {
+  color: #16a34a;
+}
+
+.result-card.is-safe .risk-box {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.result-card.is-safe .risk-title {
+  color: #15803d;
+}
+
+.result-card.is-safe .risk-badge {
+  background-color: #bbf7d0;
+  color: #14532d;
+}
+
+.result-card.is-safe .reason-icon {
+  background-color: #16a34a;
+}
+
