@@ -4,25 +4,13 @@ import joblib
 import pandas as pd
 from urllib.parse import urlparse
 
-
-# -----------------------------------
-# Load trained model
-# -----------------------------------
-
 BASE_DIR = Path(__file__).resolve().parent
 model_data = joblib.load(BASE_DIR / "model.pkl")
 
 model = model_data["model"]
-
 features = model_data["features"]
 
-
-# -----------------------------------
-# Extract features from URL
-# -----------------------------------
-
 def extract_features(url):
-    # Remove trailing slash if present for standard parsing
     raw_url = url.strip()
     if raw_url.endswith("/") and len(raw_url) > 8:
         raw_url = raw_url[:-1]
@@ -39,29 +27,24 @@ def extract_features(url):
     url_length = len(raw_url)
     domain_length = len(domain)
 
-    # TLD Length
     if len(domain_parts) > 1:
         tld = domain_parts[-1]
     else:
         tld = ""
     tld_length = len(tld)
 
-    # Subdomain count
     if len(domain_parts) > 2:
         no_of_subdomain = len(domain_parts) - 2
     else:
         no_of_subdomain = 0
 
-    # IP check
     is_domain_ip = 1 if re.match(r"^\d{1,3}(\.\d{1,3}){3}$", domain) else 0
 
-    # Obfuscation
     suspicious_characters = ["@", "%", "&"]
     no_of_obfuscated_char = sum(raw_url.count(c) for c in suspicious_characters)
     has_obfuscation = 1 if no_of_obfuscated_char > 0 else 0
     obfuscation_ratio = round(no_of_obfuscated_char / url_length, 3) if url_length > 0 else 0.0
 
-    # Letters in URL (Main domain body + path letters, matching PhiUSIIL dataset logic)
     if len(domain_parts) >= 2:
         main_domain = domain_parts[-2]
     else:
@@ -71,22 +54,18 @@ def extract_features(url):
     no_of_letters = sum(c.isalpha() for c in main_domain) + sum(c.isalpha() for c in path_and_query)
     letter_ratio = round(no_of_letters / url_length, 3) if url_length > 0 else 0.0
 
-    # Digits in URL
     no_of_digits = sum(c.isdigit() for c in raw_url)
     digit_ratio = round(no_of_digits / url_length, 3) if url_length > 0 else 0.0
 
-    # Special characters
     no_of_equals = raw_url.count("=")
     no_of_question_marks = raw_url.count("?")
     no_of_ampersand = raw_url.count("&")
 
-    # Non-alphanumeric special characters
     no_of_other_special_chars = sum(
         1 for c in raw_url if not c.isalnum() and c not in [".", "/", ":", "?", "="]
     )
     special_char_ratio = round(no_of_other_special_chars / url_length, 3) if url_length > 0 else 0.0
 
-    # HTTPS check
     is_https = 1 if parsed_url.scheme == "https" else 0
 
     return {
@@ -110,16 +89,9 @@ def extract_features(url):
         "IsHTTPS": is_https
     }
 
-
-# -----------------------------------
-# Predict URL
-# -----------------------------------
-
 def predict_url(url):
-    # Extract features
     feature_values = extract_features(url)
 
-    # Create DataFrame
     input_data = pd.DataFrame(
         [
             [
@@ -130,19 +102,14 @@ def predict_url(url):
         columns=features
     )
 
-    # Make prediction
     prediction = model.predict(input_data)[0]
 
-    # Calculate confidence / probability
     probabilities = model.predict_proba(input_data)[0]
     classes = list(model.classes_)
     
-    # Class index for prediction
     pred_idx = classes.index(prediction)
     confidence = round(float(probabilities[pred_idx]) * 100, 1)
 
-    # Determine if phishing or legitimate
-    # Note: In PhiUSIIL dataset, label 1 is Legitimate, 0 is Phishing
     if prediction == 1:
         result_label = "Legitimate"
         is_phishing = False
@@ -150,7 +117,6 @@ def predict_url(url):
         result_label = "Phishing"
         is_phishing = True
 
-    # Generate reasons breakdown
     reasons = []
 
     if is_phishing:
@@ -190,4 +156,4 @@ def predict_url(url):
         "confidence": confidence,
         "reasons": reasons,
         "features": feature_values
-    }
+    }

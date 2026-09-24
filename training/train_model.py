@@ -7,11 +7,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
-
-# -----------------------------------
-# 1. Load dataset
-# -----------------------------------
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 dataset_path = PROJECT_ROOT / "dataset" / "PhiUSIIL_Phishing_URL_Dataset.csv"
 
@@ -19,11 +14,6 @@ df = pd.read_csv(dataset_path)
 
 print("Dataset loaded successfully!")
 print("Number of rows:", len(df))
-
-
-# -----------------------------------
-# 2. Select URL-based features
-# -----------------------------------
 
 features = [
     "URLLength",
@@ -46,19 +36,8 @@ features = [
     "IsHTTPS"
 ]
 
-
-# -----------------------------------
-# 3. Create X and y
-# -----------------------------------
-
 X = df[features]
-
 y = df["label"]
-
-
-# -----------------------------------
-# 4. Split dataset
-# -----------------------------------
 
 X_train, X_test, y_train, y_test = train_test_split(
     X,
@@ -71,32 +50,17 @@ X_train, X_test, y_train, y_test = train_test_split(
 print("Training data:", len(X_train))
 print("Testing data:", len(X_test))
 
-
-# -----------------------------------
-# 5. Create Random Forest model
-# -----------------------------------
-
 model = RandomForestClassifier(
     n_estimators=100,
     random_state=42,
     n_jobs=-1
 )
 
-
-# -----------------------------------
-# 6. Train model
-# -----------------------------------
-
 print("Training model...")
 
 model.fit(X_train, y_train)
 
 print("Model training completed!")
-
-
-# -----------------------------------
-# 7. Test model
-# -----------------------------------
 
 y_pred = model.predict(X_test)
 
@@ -107,11 +71,6 @@ print(accuracy)
 
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
-
-
-# -----------------------------------
-# 8. Save model
-# -----------------------------------
 
 output_path = PROJECT_ROOT / "Backend" / "model.pkl"
 joblib.dump(
